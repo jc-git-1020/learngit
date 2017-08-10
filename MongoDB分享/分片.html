@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>分片</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>一，MongoDB分片</h1>
+<p>MongoDB复制集解决了数据库的备份与自动故障转移，但是围绕数据库的业务中当前还有两个方面的问题变得越来越重要，一是海量数据如何存储，二是如何高效地读写海量数据。尽管复制集也可以实现读写分离，如在primary节点上写，在secondary节点上读，但在这种方式下客户端读出来的数据有可能不是最新的，因为primary节点到secondary节点间的数据同步会带来一定延迟，而且这种方式也不能处理大量数据。mongodb引入了分片机制，实现了海量数据的分布式存储与高效的读写分离。复制集中的每个成员是一个mongod实例，但在分片部署上，每一个分片可能就是一个复制集</p>
+<p>分片的使用会是数据库系统变得复杂。什么时候使用分片也是需要考虑的问题。</p>
+<p>因此对于大数据的处理，要时刻监控MongoDB的磁盘I/O性能、可用内存的大小，在数据库内使用率达到一定程度时就要考虑分片了，通过分片使整个数据库分布在各个片上，每个片拥有数据库的一部分数据，从而降低内存使用率，提高读写性能。</p>
+<p>为什么使用分片： </p>
+<ol>
+<li>复制所有的写入操作到主节点，导致读写性能下降 </li>
+<li>时间延迟导致查询出现误差 </li>
+<li>当请求量巨大时会出现内存不足 </li>
+<li>本地磁盘不足 </li>
+<li>垂直扩展价格昂贵</li>
+</ol>
+<h1>二，分片集群架构</h1>
+<p><img src="sharded-cluster-production-architecture.png" /></p>
+<p>Shard（replica set）: 
+用于存储实际的数据块，实际生产环境中一个shard server角色可由几台机器组个一个replica set承担，防止主机单点故障。</p>
+<p>Config Server（replica set）: 
+mongod实例，存储了整个 ClusterMetadata，其中包括 chunk信息。</p>
+<p>Routers（mongos）: 
+前端路由，客户端由此接入，且让整个集群看上去像单一数据库，前端应用可以透明使用。</p>
+<p>分片集群中的一个片shard实际上就是一个复制集，当然一个片也可以是单个mongod实例，只是在分片集群的生产环境中，每个片只是保存整个数据库数据的一部分，如果这部分数据丢失了，那么整个数据库就不完整了。</p>
+<p>配置服务器config server在整个分片集群中相当重要。上面说到mongos会从配置服务器同步元信息，因此配置服务器要能实现这些元信息的持久化。配置服务器上的数据如果丢失，那么整个分片集群就无法使用，因此在生产环境中要使用复制集部署配置服务器。</p>
+<p><strong>因此，出于高可用的考虑，架构中Config Server和shard必须部署为复制集</strong>。</p>
+<p><strong>MongoDB分片，实际上将一个表的数据拆分成多个子表，分散在多个数据库实例中。</strong></p>
+<p>如下图：</p>
+<p><img src="sharded-cluster-primary-shard.png" /></p>
+<p>其中，Collection1使用了分片，Collection2没有使用分片。</p>
+<p>分片集合对于客户端的读写操作来说，是透明的，Routers和Config Server会自动实现指定数据的路由，客户端只需像操作单个数据库实例一样操作数据库即可。</p>
+<p><img src="sharded-cluster-mixed.png" /></p>
+<h1>二，片键选择策略</h1>
+<h2>1，哈希分片（Hashed Sharding）</h2>
+<p><img src="sharding-hash-based.png" /></p>
+<p>完全随机的片键，即散列片键（Hashed Shard Key）。这种片键虽然可以解决分发写操作的问题，但由于太过随机，导致写操作将被分散到整个集群上，不能实现指定目标范围的查询，每一个读操作可能要查询所有的片，这样影响读的性能。</p>
+<h2>2，范围分片（Ranged Sharding）</h2>
+<p><img src="sharding-range-based.png" /></p>
+<p>适合片键的取值范围有限的集合。</p>
+<pre><code>结合校招：
+例如校招的resume集合可以把年份year字段作为片键，这样我们插入的数据会按照year字段进行分析。
+数据库会根据year字段将数据切割成几个数据块chunk。
+这样，每次根据年份查询的时候就不需要查询全部数据，Routers会帮我们路由到指定年份的数据块，只对该数据块进行查询。
+</code></pre>
+
+<p>不过范围分片可能会导致数据分配不平衡的问题。</p>
+<h1>三，总结</h1>
+<p>分片集群上的锁范围局限在每一个片上，而不是整个集群，每一个片上的操作都是独立的，因此不会影响其他片上的操作。分片集群通过路由器mongos分发读写操作到各个片上，整体上提高了系统的并发性和吞吐量。并不是所有的系统都适合部署成分片集合，只有当数据量打、读写请求很高时才适合用分片集群。一旦部署成分片集群，那么集群中的每一个片都应该部署成复制集的形式，提高系统的可靠性和故障恢复的能力。分片时片键的选择很重要，不好的片键会降低系统的性能。</p>
+<p>但是，部署为分片会把系统架构变得复杂，运维的维护难度也会困难很多，校招项目不算大项目，个人感觉并不适合部署为分片。</p>
+<p>对于数据量大引发的读写性能问题，例如resume，可以通过分表的形式，将resume根据校招社招及年份进行分表，提高读写性能。</p>
+<p>举例：</p>
+<p>将resume分为<code>xz_2018_resume</code>，<code>xz_2017_resume</code>，<code>sz_2018_resume</code>，<code>sz_2017_resume</code>，这样可以把数据量进行拆分，而用户界面的操作逻辑可以进行调整，例如默认返回2018年的数据，提供按钮，当用户需要返回全部数据时再进行多个表的数据合并。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>复制集</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>一，MongoDB复制集</h1>
+<p>MongoDB复制是将数据同步在多个服务器的过程。</p>
+<p>复制提供了数据的冗余备份，并在多个服务器上存储数据副本，提高了数据的可用性， 并可以保证数据的安全性。</p>
+<p>复制还允许你从硬件故障和服务中断中恢复数据。</p>
+<p>复制集：</p>
+<ul>
+<li>保障数据的安全性</li>
+<li>数据高可用性 (24*7)</li>
+<li>灾难恢复</li>
+<li>无需停机维护（如备份，重建索引，压缩）</li>
+<li>分布式读取数据</li>
+</ul>
+<h1>二，MongoDB原理</h1>
+<p>mongodb的复制至少需要两个节点。其中一个是主节点，负责处理客户端请求，其余的都是从节点，负责复制主节点上的数据。</p>
+<p>mongodb各个节点常见的搭配方式为：一主一从、一主多从。</p>
+<p>主节点记录在其上的所有操作oplog，从节点定期轮询主节点获取这些操作，然后对自己的数据副本执行这些操作，从而保证从节点的数据与主节点一致。</p>
+<p>MongoDB复制结构图如下所示：</p>
+<p><img src="replica-set-read-write-operations-primary.png" /></p>
+<p>以上结构图中，客户端从主节点读取数据，在客户端写入数据到主节点时， 主节点与从节点进行数据交互保障数据的一致性。</p>
+<p>特点：</p>
+<ul>
+<li>N 个节点的集群</li>
+<li>任何节点可作为主节点</li>
+<li>所有写入操作都在主节点上</li>
+<li>自动故障转移</li>
+<li>自动恢复</li>
+</ul>
+<h1>三，MongoDB原理</h1>
+<p>主节点（primary）：负责数据的读写，将数据同步到从节点，并参与投票。</p>
+<p>从节点（secondary）：负责从主节点同步数据，参与投票。</p>
+<p>仲裁者节点（arbiter）：只负责参与投票，不同步数据。</p>
+<p>一个复制集至少需要三个节点，常见的两种复制集形式为一主两从或一主一从一仲裁。</p>
+<p>一主两从：</p>
+<p><img src="replica-set-primary-with-two-secondaries.png" /></p>
+<p>一主一从一仲裁：</p>
+<p><img src="replica-set-primary-with-secondary-and-arbiter.png" /></p>
+<p>自动故障转移：当主节点发生故障时，剩下的节点能够通过选举，选举出新的主节点。</p>
+<p><img src="replica-set-trigger-election.png" /></p>
+<h1>四，读参考（Read Preference）</h1>
+<p>读参考是指MongoDB将客户端的读请求路由到复制集中指定的成员上，默认情况下读操作的请求被路由到复制集的primary节点上。从primary节点上进行读取能够保证读到的数据是最新的，但是将读操作路由到其他secondary节点上去后，由于从primary节点同步数据到secondary节点会产生时间差，可能导致从secondary节点上读到的数据不是最新的。当然这对于实时性要求不是很高的绝大部分应用程序来说，并不是大问题。</p>
+<p>因为每一个secondary节点都会从primary节点同步数据，所有secondary节点一般有相同的写操作流量，同时primary节点上的用于同步数据的读操作量也并没有减少。</p>
+<p>它最大的好处是能够使客户端的读请求路由到最佳的secondary节点上（如最近的节点），提高客户端的读效率，并且一定程度上实现读写分离。</p>
+<p><img src="replica-set-read-preference.png" /></p>
+<h1>五，写关注（Write Concern）</h1>
+<p>对于某些应用程序来说，写关注是重要的。它能判断哪些写操作成功写入了，哪些失败了。对于失败的操作，驱动程序能返回错误，由应用程序决定怎么处理。如果没有写关注，应用程序发送一个写操作到socket后，就不会管后面发生了什么情况，不知道是否成功写入数据库，这种情形对于日志类型的应用程序还是可以接受的，因为偶尔的写失败不会影响整个日志的监控情况。带有写关注的操作会等到数据库确认成功写入后才能返回，因此写关注会带来一点性能的损失。</p>
+<p><img src="crud-write-concern-w2.png" /></p>
+<pre><code>db.products.insert(
+   { item: &quot;envelopes&quot;, qty : 100, type: &quot;Clasp&quot; },
+   { writeConcern: { w: 2, wtimeout: 5000 } }
+)
+</code></pre>
+
+<p>w为2表示写关注将针对复制集中的2个节点，当MongoDB收到这些节点的反馈信息后，命令才返回给客户端继续执行。</p>
+<p>wtimeout表示超时时间，指定写关注应在多长时间内返归，如果你没有指定这个值，复制集可能因为不确定因素导致应用程序的写操作一直阻塞。</p>
+<h1>六，结合校招</h1>
+<p>MongoDB复制集主要是用于高可用，读参考可用于读写分离，但是目前校招有自己的定时备份机制，加上校招的访问量和并发量不高，只有一台服务器，所以可能并不适合使用复制集。</p>
+<p>当然，有兴趣可以学习下MongoDB的复制集，扩展知识面。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
