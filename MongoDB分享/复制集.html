@@ -318,7 +318,7 @@ img {
 <li>自动故障转移</li>
 <li>自动恢复</li>
 </ul>
-<h1>三，MongoDB原理</h1>
+<h1>三，MongoDB复制集原理</h1>
 <p>主节点（primary）：负责数据的读写，将数据同步到从节点，并参与投票。</p>
 <p>从节点（secondary）：负责从主节点同步数据，参与投票。</p>
 <p>仲裁者节点（arbiter）：只负责参与投票，不同步数据。</p>
@@ -329,12 +329,261 @@ img {
 <p><img src="replica-set-primary-with-secondary-and-arbiter.png" /></p>
 <p>自动故障转移：当主节点发生故障时，剩下的节点能够通过选举，选举出新的主节点。</p>
 <p><img src="replica-set-trigger-election.png" /></p>
-<h1>四，读参考（Read Preference）</h1>
+<h1>四，部署复制集</h1>
+<p>这里使用Windows平台部署，基于MongoDB 3.4版本，部署常见的一主一从一仲裁的简单复制集架构。</p>
+<p>创建复制集中每个节点存放数据的目录。</p>
+<pre><code>D:\MongoDB\Server\3.4\data\Replication\db_rs0
+D:\MongoDB\Server\3.4\data\Replication\db_rs1
+D:\MongoDB\Server\3.4\data\Replication\db_rs2
+</code></pre>
+
+<p>创建复制集中的每个节点启动时所需的配置文件。</p>
+<pre><code>D:\MongoDB\Server\3.4\data\Replication\db_rs0\configs_rs0\rs0_0.conf
+D:\MongoDB\Server\3.4\data\Replication\db_rs0\configs_rs0\rs0_1.conf
+D:\MongoDB\Server\3.4\data\Replication\db_rs0\configs_rs0\rs0_2.conf
+</code></pre>
+
+<p>每个配置文件对应的内容</p>
+<p>rs0_0.conf</p>
+<pre><code>dbpath = D:\MongoDB\Server\3.4\data\Replication\db_rs0\rs0_0
+logpath = D:\MongoDB\Server\3.4\data\Replication\db_rs0\log\rs0_0.log
+journal = true
+port = 40000
+replSet = rs0
+</code></pre>
+
+<p>rs0_1.conf</p>
+<pre><code>dbpath = D:\MongoDB\Server\3.4\data\Replication\db_rs0\rs0_1
+logpath = D:\MongoDB\Server\3.4\data\Replication\db_rs0\log\rs0_1.log
+journal = true
+port = 40000
+replSet = rs0
+</code></pre>
+
+<p>rs0_2.conf</p>
+<pre><code>dbpath = D:\MongoDB\Server\3.4\data\Replication\db_rs0\rs0_2
+logpath = D:\MongoDB\Server\3.4\data\Replication\db_rs0\log\rs0_2.log
+journal = true
+port = 40000
+replSet = rs0
+</code></pre>
+
+<p>启动上面三个节点对应的MongoDB实例。</p>
+<pre><code>mongod -config D:\MongoDB\Server\3.4\data\Replication\db_rs0\configs_rs0\rs0_0.conf
+mongod -config D:\MongoDB\Server\3.4\data\Replication\db_rs0\configs_rs0\rs0_1.conf
+mongod -config D:\MongoDB\Server\3.4\data\Replication\db_rs0\configs_rs0\rs0_2.conf
+</code></pre>
+
+<p>现在已经启动了3个实例，但是复制集还没配置好，如上图所描述的那样，我们应该通过配置确定哪个节点为primary，哪个节点为secondary，哪个节点是arbiter。</p>
+<p>启动一个mongo客户端，连接到上面的一个mongod实例。</p>
+<pre><code>mongo -port 40000
+</code></pre>
+
+<p>复制集初始化，在shell中执行命令。</p>
+<pre><code>rs.initiate()
+{
+    &quot;info2&quot; : &quot;no configuration specified. Using a default configuration for the set&quot;,
+    &quot;me&quot; : &quot;��վ-�¿���:40000&quot;,
+    &quot;ok&quot; : 1
+}
+</code></pre>
+
+<p>查看当前配置。</p>
+<pre><code>rs.conf()
+{
+&quot;_id&quot; : &quot;rs0&quot;,
+&quot;version&quot; : 1,
+&quot;protocolVersion&quot; : NumberLong(1),
+&quot;members&quot; : [ 
+    {
+        &quot;_id&quot; : 0,
+        &quot;host&quot; : &quot;��վ-�¿���:40000&quot;,
+        &quot;arbiterOnly&quot; : false,
+        &quot;buildIndexes&quot; : true,
+        &quot;hidden&quot; : false,
+        &quot;priority&quot; : 1.0,
+        &quot;tags&quot; : {},
+        &quot;slaveDelay&quot; : NumberLong(0),
+        &quot;votes&quot; : 1
+    }
+],
+&quot;settings&quot; : {
+    &quot;chainingAllowed&quot; : true,
+    &quot;heartbeatIntervalMillis&quot; : 2000,
+    &quot;heartbeatTimeoutSecs&quot; : 10,
+    &quot;electionTimeoutMillis&quot; : 10000,
+    &quot;catchUpTimeoutMillis&quot; : 2000,
+    &quot;getLastErrorModes&quot; : {},
+    &quot;getLastErrorDefaults&quot; : {
+        &quot;w&quot; : 1,
+        &quot;wtimeout&quot; : 0
+    },
+    &quot;replicaSetId&quot; : ObjectId(&quot;598d1a8786256296a78a4694&quot;)
+}
+}
+</code></pre>
+
+<p>执行初始化的mongo实例默认成为复制集的primary节点，可以看到，当前复制集只有一个primary节点。</p>
+<p>在监听40000端口的实例的shell添加复制集中的secondary节点。</p>
+<pre><code>rs0:PRIMARY&gt; rs.add(&quot;10.32.8.78:40001&quot;)
+{ &quot;ok&quot; : 1 }
+</code></pre>
+
+<p>在监听40000端口的实例的shell添加复制集中的arbiter节点。</p>
+<pre><code>rs0:PRIMARY&gt; rs.addArb(&quot;10.32.8.78:40002&quot;)
+{ &quot;ok&quot; : 1 }
+</code></pre>
+
+<p>再次查看配置</p>
+<pre><code>rs.conf()
+{
+&quot;_id&quot; : &quot;rs0&quot;,
+&quot;version&quot; : 3,
+&quot;protocolVersion&quot; : NumberLong(1),
+&quot;members&quot; : [ 
+    {
+        &quot;_id&quot; : 0,
+        &quot;host&quot; : &quot;��վ-�¿���:40000&quot;,
+        &quot;arbiterOnly&quot; : false,
+        &quot;buildIndexes&quot; : true,
+        &quot;hidden&quot; : false,
+        &quot;priority&quot; : 1.0,
+        &quot;tags&quot; : {},
+        &quot;slaveDelay&quot; : NumberLong(0),
+        &quot;votes&quot; : 1
+    }, 
+    {
+        &quot;_id&quot; : 1,
+        &quot;host&quot; : &quot;10.32.8.78:40001&quot;,
+        &quot;arbiterOnly&quot; : false,
+        &quot;buildIndexes&quot; : true,
+        &quot;hidden&quot; : false,
+        &quot;priority&quot; : 1.0,
+        &quot;tags&quot; : {},
+        &quot;slaveDelay&quot; : NumberLong(0),
+        &quot;votes&quot; : 1
+    }, 
+    {
+        &quot;_id&quot; : 2,
+        &quot;host&quot; : &quot;10.32.8.78:40002&quot;,
+        &quot;arbiterOnly&quot; : true,
+        &quot;buildIndexes&quot; : true,
+        &quot;hidden&quot; : false,
+        &quot;priority&quot; : 1.0,
+        &quot;tags&quot; : {},
+        &quot;slaveDelay&quot; : NumberLong(0),
+        &quot;votes&quot; : 1
+    }
+],
+&quot;settings&quot; : {
+    &quot;chainingAllowed&quot; : true,
+    &quot;heartbeatIntervalMillis&quot; : 2000,
+    &quot;heartbeatTimeoutSecs&quot; : 10,
+    &quot;electionTimeoutMillis&quot; : 10000,
+    &quot;catchUpTimeoutMillis&quot; : 2000,
+    &quot;getLastErrorModes&quot; : {},
+    &quot;getLastErrorDefaults&quot; : {
+        &quot;w&quot; : 1,
+        &quot;wtimeout&quot; : 0
+    },
+    &quot;replicaSetId&quot; : ObjectId(&quot;598d1a8786256296a78a4694&quot;)
+}
+}
+</code></pre>
+
+<p>可以看到有三个节点了。</p>
+<p>查看主节点。</p>
+<pre><code>rs.isMaster()
+rs0:PRIMARY&gt; rs.isMaster()
+{
+    &quot;hosts&quot; : [
+            &quot;��վ-�¿���:40000&quot;,
+            &quot;10.32.8.78:40001&quot;
+    ],
+    &quot;arbiters&quot; : [
+            &quot;10.32.8.78:40002&quot;
+    ],
+    &quot;setName&quot; : &quot;rs0&quot;,
+    &quot;setVersion&quot; : 3,
+    &quot;ismaster&quot; : true,
+    &quot;secondary&quot; : false,
+    &quot;primary&quot; : &quot;��վ-�¿���:40000&quot;,
+    &quot;me&quot; : &quot;��վ-�¿���:40000&quot;,
+    &quot;electionId&quot; : ObjectId(&quot;7fffffff0000000000000001&quot;),
+    &quot;lastWrite&quot; : {
+            &quot;opTime&quot; : {
+                    &quot;ts&quot; : Timestamp(1502420582, 1),
+                    &quot;t&quot; : NumberLong(1)
+            },
+            &quot;lastWriteDate&quot; : ISODate(&quot;2017-08-11T03:03:02Z&quot;)
+    },
+    &quot;maxBsonObjectSize&quot; : 16777216,
+    &quot;maxMessageSizeBytes&quot; : 48000000,
+    &quot;maxWriteBatchSize&quot; : 1000,
+    &quot;localTime&quot; : ISODate(&quot;2017-08-11T03:03:10.381Z&quot;),
+    &quot;maxWireVersion&quot; : 5,
+    &quot;minWireVersion&quot; : 0,
+    &quot;readOnly&quot; : false,
+    &quot;ok&quot; : 1
+}
+</code></pre>
+
+<p>此时在40000端口的实例插入测试数据。</p>
+<pre><code>rs0:PRIMARY&gt; db.getCollection('test').insert({age:1,name:'a'})
+WriteResult({ &quot;nInserted&quot; : 1 })
+</code></pre>
+
+<p>连接40001实例查看是否自动同步数据，<strong>secondary默认是不允许读写的，所以要先执行slaveOk</strong>，方法如下</p>
+<pre><code>rs0:SECONDARY&gt; rs.slaveOk()
+rs0:SECONDARY&gt; db.getCollection('test').find({})
+{ &quot;_id&quot; : ObjectId(&quot;598d1f2e0aec260c3b8c3bc2&quot;), &quot;age&quot; : 1, &quot;name&quot; : &quot;a&quot; }
+rs0:SECONDARY&gt;
+</code></pre>
+
+<p>此时，数据已经完成自动同步。</p>
+<p>现在演示自动故障转移。</p>
+<p>在40000端口的mongod实例中通过Ctrl+c中断进程，然后在在40001端口的mongo中查看复制集信息</p>
+<pre><code>rs0:PRIMARY&gt; rs.isMaster()
+{
+    &quot;hosts&quot; : [
+            &quot;��վ-�¿���:40000&quot;,
+            &quot;10.32.8.78:40001&quot;
+    ],
+    &quot;arbiters&quot; : [
+            &quot;10.32.8.78:40002&quot;
+    ],
+    &quot;setName&quot; : &quot;rs0&quot;,
+    &quot;setVersion&quot; : 3,
+    &quot;ismaster&quot; : true,
+    &quot;secondary&quot; : false,
+    &quot;primary&quot; : &quot;10.32.8.78:40001&quot;,
+    &quot;me&quot; : &quot;10.32.8.78:40001&quot;,
+    &quot;electionId&quot; : ObjectId(&quot;7fffffff0000000000000002&quot;),
+    &quot;lastWrite&quot; : {
+            &quot;opTime&quot; : {
+                    &quot;ts&quot; : Timestamp(1502431282, 1),
+                    &quot;t&quot; : NumberLong(2)
+            },
+            &quot;lastWriteDate&quot; : ISODate(&quot;2017-08-11T06:01:22Z&quot;)
+    },
+    &quot;maxBsonObjectSize&quot; : 16777216,
+    &quot;maxMessageSizeBytes&quot; : 48000000,
+    &quot;maxWriteBatchSize&quot; : 1000,
+    &quot;localTime&quot; : ISODate(&quot;2017-08-11T06:01:23.145Z&quot;),
+    &quot;maxWireVersion&quot; : 5,
+    &quot;minWireVersion&quot; : 0,
+    &quot;readOnly&quot; : false,
+    &quot;ok&quot; : 1
+}
+</code></pre>
+
+<p>可以看到在40000实例中断后40001的实例通过投票被选举为新的primary节点，实现了故障自动转移。</p>
+<h1>五，读参考（Read Preference）</h1>
 <p>读参考是指MongoDB将客户端的读请求路由到复制集中指定的成员上，默认情况下读操作的请求被路由到复制集的primary节点上。从primary节点上进行读取能够保证读到的数据是最新的，但是将读操作路由到其他secondary节点上去后，由于从primary节点同步数据到secondary节点会产生时间差，可能导致从secondary节点上读到的数据不是最新的。当然这对于实时性要求不是很高的绝大部分应用程序来说，并不是大问题。</p>
 <p>因为每一个secondary节点都会从primary节点同步数据，所有secondary节点一般有相同的写操作流量，同时primary节点上的用于同步数据的读操作量也并没有减少。</p>
 <p>它最大的好处是能够使客户端的读请求路由到最佳的secondary节点上（如最近的节点），提高客户端的读效率，并且一定程度上实现读写分离。</p>
 <p><img src="replica-set-read-preference.png" /></p>
-<h1>五，写关注（Write Concern）</h1>
+<h1>六，写关注（Write Concern）</h1>
 <p>对于某些应用程序来说，写关注是重要的。它能判断哪些写操作成功写入了，哪些失败了。对于失败的操作，驱动程序能返回错误，由应用程序决定怎么处理。如果没有写关注，应用程序发送一个写操作到socket后，就不会管后面发生了什么情况，不知道是否成功写入数据库，这种情形对于日志类型的应用程序还是可以接受的，因为偶尔的写失败不会影响整个日志的监控情况。带有写关注的操作会等到数据库确认成功写入后才能返回，因此写关注会带来一点性能的损失。</p>
 <p><img src="crud-write-concern-w2.png" /></p>
 <pre><code>db.products.insert(
@@ -345,9 +594,6 @@ img {
 
 <p>w为2表示写关注将针对复制集中的2个节点，当MongoDB收到这些节点的反馈信息后，命令才返回给客户端继续执行。</p>
 <p>wtimeout表示超时时间，指定写关注应在多长时间内返归，如果你没有指定这个值，复制集可能因为不确定因素导致应用程序的写操作一直阻塞。</p>
-<h1>六，结合校招</h1>
-<p>MongoDB复制集主要是用于高可用，读参考可用于读写分离，但是目前校招有自己的定时备份机制，加上校招的访问量和并发量不高，只有一台服务器，所以可能并不适合使用复制集。</p>
-<p>当然，有兴趣可以学习下MongoDB的复制集，扩展知识面。</p>
 
 </body>
 </html>
